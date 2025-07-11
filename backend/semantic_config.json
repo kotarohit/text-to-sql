@@ -1,0 +1,57 @@
+{
+  "tables": {
+    "revenue": {
+      "columns": {
+        "Dealer_ID": ["dealer", "salesperson", "sales agent"],
+        "Model_ID": ["model", "product model"],
+        "Branch_ID": ["branch", "store location"],
+        "Date_ID": ["date", "day", "time"],
+        "Units_So": ["units sold", "quantity", "volume sold"],
+        "Revenue": ["revenue", "sales", "total revenue", "earnings"]
+      },
+      "metrics": {
+        "total_revenue": "SUM(Revenue)",
+        "total_units_sold": "SUM(Units_So)",
+        "average_revenue_per_unit": "SUM(Revenue) / NULLIF(SUM(Units_So), 0)"
+      }
+    },
+    "dealer": {
+      "columns": {
+        "Dealer_ID": ["dealer id", "salesperson id"],
+        "Dealer_NM": ["dealer name", "salesperson name"],
+        "Location_ID": ["location id"],
+        "Country_NM": ["country", "region"]
+      }
+    },
+    "branch": {
+      "columns": {
+        "Branch_ID": ["branch id", "store id"],
+        "Branch_NM": ["branch name", "store name"],
+        "Country_Name": ["country"]
+      }
+    },
+    "product": {
+      "columns": {
+        "Product_ID": ["product id"],
+        "Product_Name": ["product name", "item"],
+        "Model_ID": ["model id"],
+        "Model_Name": ["model name"]
+      }
+    },
+    "date": {
+      "columns": {
+        "Date_ID": ["date id"],
+        "Date": ["date", "day"],
+        "Year": ["year"],
+        "Month": ["month"],
+        "Quarter": ["quarter"]
+      }
+    },
+    "country": {
+      "columns": {
+        "Country_ID": ["country id"],
+        "Country_Name": ["country name", "region"]
+      }
+    }
+  }
+}

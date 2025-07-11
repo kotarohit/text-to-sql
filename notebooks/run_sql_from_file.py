@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 engine = create_engine("postgresql+psycopg2://admin:admin@localhost:6543/semantic")
 
 # ✅ Read queries from file
-with open("test_queries.sql", "r") as file:
+with open("/Users/rohithkota/Desktop/All_projects/text-to-sql/notebooks/sql_queries/basic_queries.sql", "r") as file:
     sql_content = file.read()
 
 # ✅ Split queries based on semicolon (assumes one query per block)
