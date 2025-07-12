@@ -6,7 +6,7 @@
         "Model_ID": ["model", "product model"],
         "Branch_ID": ["branch", "store location"],
         "Date_ID": ["date", "day", "time"],
-        "Units_So": ["units sold", "quantity", "volume sold"],
+        "Units_Sold": ["units sold", "quantity", "volume sold"],
         "Revenue": ["revenue", "sales", "total revenue", "earnings"]
       },
       "metrics": {
@@ -20,12 +20,13 @@
         "Dealer_ID": ["dealer id", "salesperson id"],
         "Dealer_NM": ["dealer name", "salesperson name"],
         "Location_ID": ["location id"],
-        "Country_NM": ["country", "region"]
+        "Location_NM": ["country", "region"],
+        "Country_ID": ["country id"]
       }
     },
     "branch": {
       "columns": {
-        "Branch_ID": ["branch id", "store id"],
+        "Branch_ID": ["branch id", "store id"],       
         "Branch_NM": ["branch name", "store name"],
         "Country_Name": ["country"]
       }
@@ -42,16 +43,17 @@
       "columns": {
         "Date_ID": ["date id"],
         "Date": ["date", "day"],
-        "Year": ["year"],
+        "year": ["year"],
         "Month": ["month"],
         "Quarter": ["quarter"]
       }
     },
     "country": {
       "columns": {
-        "Country_ID": ["country id"],
+        "Country_ID": ["country id"],          
         "Country_Name": ["country name", "region"]
       }
     }
   }
 }
+

@@ -1,8 +1,0 @@
-fastapi
-uvicorn
-langchain
-openai
-psycopg2-binary
-sqlalchemy
-pydantic
-python-dotenv

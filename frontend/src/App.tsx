@@ -1,3 +1,4 @@
+import { fetchQueryResult } from './fetchQueryResult';
 import React, { useState, useEffect } from 'react';
 import { 
   Database, 
@@ -31,50 +32,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Mock data for demonstration
-  const mockQueries = {
-    'total revenue by month': {
-      query: `SELECT 
-  DATE_TRUNC('month', order_date) as month,
-  SUM(total_amount) as total_revenue
-FROM orders 
-WHERE order_date >= '2024-01-01'
-GROUP BY DATE_TRUNC('month', order_date)
-ORDER BY month DESC;`,
-      explanation: 'This query calculates total revenue grouped by month from the orders table.',
-      results: {
-        columns: ['month', 'total_revenue'],
-        rows: [
-          ['2024-03-01', 45230.50],
-          ['2024-02-01', 38940.75],
-          ['2024-01-01', 42180.25]
-        ]
-      }
-    },
-    'top customers': {
-      query: `SELECT 
-  c.customer_name,
-  COUNT(o.order_id) as total_orders,
-  SUM(o.total_amount) as total_spent
-FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id, c.customer_name
-ORDER BY total_spent DESC
-LIMIT 10;`,
-      explanation: 'This query finds the top 10 customers by total spending.',
-      results: {
-        columns: ['customer_name', 'total_orders', 'total_spent'],
-        rows: [
-          ['Alice Johnson', 12, 2840.50],
-          ['Bob Smith', 8, 1950.75],
-          ['Carol Davis', 15, 1820.25],
-          ['David Wilson', 6, 1675.00],
-          ['Emma Brown', 9, 1540.80]
-        ]
-      }
-    }
-  };
-
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -83,34 +40,38 @@ LIMIT 10;`,
     }
   }, [darkMode]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!question.trim()) return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!question.trim()) return;
 
-    setIsLoading(true);
-    setError(null);
-    setSqlQuery(null);
-    setResults(null);
+  setIsLoading(true);
+  setError(null);
+  setSqlQuery(null);
+  setResults(null);
 
-    // Simulate API call
-    setTimeout(() => {
-      const questionLower = question.toLowerCase();
-      
-      if (questionLower.includes('revenue') || questionLower.includes('sales')) {
-        const mockData = mockQueries['total revenue by month'];
-        setSqlQuery({ query: mockData.query, explanation: mockData.explanation });
-        setResults(mockData.results);
-      } else if (questionLower.includes('customer') || questionLower.includes('top')) {
-        const mockData = mockQueries['top customers'];
-        setSqlQuery({ query: mockData.query, explanation: mockData.explanation });
-        setResults(mockData.results);
-      } else {
-        setError('I\'m not sure how to answer that question. Try asking about revenue, sales, or customers.');
+  try {
+    const data = await fetchQueryResult(question);
+
+    if (!data.success) {
+      setError(data.error || "Something went wrong.");
+    } else {
+      const response = data.response;
+
+      if (response.type === "query_result") {
+        setSqlQuery({ query: response.sql, explanation: "Here is the generated SQL query." });
+        setResults({ columns: response.columns, rows: response.rows });
+      } else if (response.type === "error") {
+        setError(response.error);
       }
-      
-      setIsLoading(false);
-    }, 1500);
-  };
+    }
+  } catch (err) {
+    console.error(err);
+    setError("Failed to connect to backend or parse response.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -199,7 +160,7 @@ LIMIT 10;`,
         )}
 
         {/* Success Message & SQL Query */}
-        {sqlQuery && (
+        {sqlQuery && sqlQuery.query && (
           <div className="mb-8 space-y-6">
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
               <div className="flex items-center space-x-2">
@@ -285,20 +246,6 @@ LIMIT 10;`,
             <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
               Ask questions about your data in natural language. I'll convert them into SQL queries and show you the results.
             </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
-              <button
-                onClick={() => setQuestion('What\'s the total revenue by month?')}
-                className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors duration-200"
-              >
-                Total revenue by month
-              </button>
-              <button
-                onClick={() => setQuestion('Show me the top customers')}
-                className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors duration-200"
-              >
-                Top customers
-              </button>
-            </div>
           </div>
         )}
       </main>
