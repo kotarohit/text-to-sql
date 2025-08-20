@@ -11,8 +11,8 @@
       },
       "metrics": {
         "total_revenue": "SUM(Revenue)",
-        "total_units_sold": "SUM(Units_So)",
-        "average_revenue_per_unit": "SUM(Revenue) / NULLIF(SUM(Units_So), 0)"
+        "total_units_sold": "SUM(Units_Sold)",
+        "average_revenue_per_unit": "SUM(Revenue) / NULLIF(SUM(Units_Sold), 0)"
       }
     },
     "dealer": {

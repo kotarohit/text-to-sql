@@ -1,12 +1,19 @@
-export const fetchQueryResult = async (question: string) => {
-  const response = await fetch("http://localhost:8000/query", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ question })
-  });
+import { getToken } from './auth';
 
-  const data = await response.json();
-  return data;
-};
+const API_BASE = 'http://localhost:8000';
+
+export async function apiGet(path: string) {
+  const token = getToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}${path}`, { headers });
+  return res.json();
+}
+
+export async function apiPost(path: string, body: any) {
+  const token = getToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}${path}`, { method: 'POST', headers, body: JSON.stringify(body) });
+  return res.json();
+}
